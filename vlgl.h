@@ -53,6 +53,7 @@ typedef struct VLGL {
   mat4d m_model;
   mat4d m_view;
   mat4d m_proj;
+  vec4d m_eye;
   poly_t *poly;
 } VLGL;
 
@@ -65,6 +66,8 @@ void VLGL_render(VLGL *gl, struct VLImage *img);
 void VLGL_viewport(VLGL *gl, int w, int h);
 
 void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree);
+
+void VLGL_dive(VLGL *gl);
 
 void VLGL_reset(VLGL *gl);
 

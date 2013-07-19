@@ -32,6 +32,7 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "3dm.h"
@@ -125,6 +126,9 @@ VLGL *VLGL_construct(int p)
   gl->poly = poly_create(POLY_ICOSAHEDRON, p);
 
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glFrontFace(GL_CCW);
+  glCullFace(GL_BACK);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   vert = VLGL_create_shader(GL_VERTEX_SHADER, VLGL_VERT_ID);
@@ -173,9 +177,10 @@ VLGL *VLGL_construct(int p)
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
+  gl->m_eye[1] = -3;
   gl->m_model = mat4d_identity();
   gl->m_proj = mat4d_perspective(45, 1, 1, 10);
-  gl->m_view = mat4d_look_at((vec4d){0,-4}, (vec4d){0,10}, (vec4d){0,0,1});
+  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){0}, (vec4d){0,0,1});
 
   VLGL_CHECK_ERROR();
   return gl;
@@ -243,6 +248,13 @@ void VLGL_viewport(VLGL *gl, int w, int h)
 void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree)
 {
   gl->m_model = mat4d_rotate(gl->m_model, (vec4d){x,y,z}, degree);
+}
+
+void VLGL_dive(VLGL *gl)
+{
+  gl->m_eye[1] = gl->m_eye[1] - 4 * gl->m_eye[1] / fabs(gl->m_eye[1]);
+  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){0}, (vec4d){0,0,1});
+  gl->m_eye[1] > 0 ? glCullFace(GL_FRONT) : glCullFace(GL_BACK);
 }
 
 void VLGL_reset(VLGL *gl)

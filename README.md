@@ -32,6 +32,7 @@ Key bindings
 * **ARROW KEYS**: turn perspective up, down, left or right.
 * **SPACE**: pause video and reset the perspective.
 * **B/F**: seek video backward or forward.
+* **D**: dive into or out the sphere.
 
 
 Changelog
