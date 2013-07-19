@@ -1,0 +1,5 @@
+valo
+tags
+.syntastic_c_config
+*.o
+*.out
