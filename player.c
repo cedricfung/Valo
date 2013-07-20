@@ -29,10 +29,11 @@
 
 
 #define _GNU_SOURCE
-#include <time.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include <pthread.h>
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -105,7 +106,7 @@ static void *VLPlayer_thread(void *arg)
   av_dump_format(ic, 0, player->url, 0);
   avformat_find_stream_info(ic, NULL);
 
-  for (int i = 0; i < ic->nb_streams; i++) {
+  for (unsigned i = 0; i < ic->nb_streams; i++) {
     if (ic->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
       vs = ic->streams[i];
       vi = i;

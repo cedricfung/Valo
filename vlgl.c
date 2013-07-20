@@ -64,12 +64,13 @@
 uniform mat4 u_model; \
 uniform mat4 u_view; \
 uniform mat4 u_proj; \
+uniform mat4 u_tex; \
 layout(location=7) in vec4 a_position; \
-layout(location=3) in vec2 a_texcoord; \
+layout(location=3) in vec4 a_texcoord; \
 smooth out vec2 v_texcoord; \
 void main() { \
+  v_texcoord = (u_tex * a_texcoord).xy; \
   gl_Position = u_proj * u_view * u_model * a_position; \
-  v_texcoord = a_texcoord; \
 } \
 "
 
@@ -143,6 +144,7 @@ VLGL *VLGL_construct(int p)
   gl->u_model = glGetUniformLocation(prog, "u_model");
   gl->u_view = glGetUniformLocation(prog, "u_view");
   gl->u_proj = glGetUniformLocation(prog, "u_proj");
+  gl->u_tex = glGetUniformLocation(prog, "u_tex");
   gl->samplers[0] = glGetUniformLocation(prog, "tex_y");
   gl->samplers[1] = glGetUniformLocation(prog, "tex_u");
   gl->samplers[2] = glGetUniformLocation(prog, "tex_v");
@@ -181,6 +183,7 @@ VLGL *VLGL_construct(int p)
   gl->m_model = mat4d_identity();
   gl->m_proj = mat4d_perspective(45, 1, 1, 10);
   gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){0}, (vec4d){0,0,1});
+  gl->m_tex = mat4d_identity();
 
   VLGL_CHECK_ERROR();
   return gl;
@@ -226,6 +229,7 @@ void VLGL_render(VLGL *gl, VLImage *img)
   glUniformMatrix4fv(gl->u_model, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_model)));
   glUniformMatrix4fv(gl->u_view, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_view)));
   glUniformMatrix4fv(gl->u_proj, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_proj)));
+  glUniformMatrix4fv(gl->u_tex, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_tex)));
 
   glBindVertexArray(gl->vao);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gl->ebo);
@@ -254,7 +258,13 @@ void VLGL_dive(VLGL *gl)
 {
   gl->m_eye[1] = gl->m_eye[1] - 4 * gl->m_eye[1] / fabs(gl->m_eye[1]);
   gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){0}, (vec4d){0,0,1});
-  gl->m_eye[1] > 0 ? glCullFace(GL_FRONT) : glCullFace(GL_BACK);
+  if (gl->m_eye[1] > 0) {
+    glCullFace(GL_FRONT);
+    gl->m_tex = mat4d_translate(mat4d_scale(mat4d_identity(), -1, 1, 1), 1, 0, 0);
+  } else {
+    glCullFace(GL_BACK);
+    gl->m_tex = mat4d_identity();
+  }
 }
 
 void VLGL_reset(VLGL *gl)

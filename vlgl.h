@@ -48,11 +48,13 @@ typedef struct VLGL {
   GLuint u_model;
   GLuint u_view;
   GLuint u_proj;
+  GLuint u_tex;
   GLuint textures[3];
   GLuint samplers[3];
   mat4d m_model;
   mat4d m_view;
   mat4d m_proj;
+  mat4d m_tex;
   vec4d m_eye;
   poly_t *poly;
 } VLGL;
