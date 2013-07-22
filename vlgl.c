@@ -114,7 +114,7 @@ static GLuint VLGL_create_program(GLuint vert, GLuint frag)
   return prog;
 }
 
-VLGL *VLGL_construct(int p)
+VLGL *VLGL_construct(enum poly_type type, int precision)
 {
   VLGL *gl = NULL;
   GLuint vert, frag, prog;
@@ -124,7 +124,7 @@ VLGL *VLGL_construct(int p)
     fprintf(stderr, "[OOM: %d] VLGL_construct\n", __LINE__);
     return NULL;
   }
-  gl->poly = poly_create(POLY_ICOSAHEDRON, p);
+  gl->poly = poly_create(type, precision);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);

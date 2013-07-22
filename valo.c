@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <GLFW/glfw3.h>
 #include "vlgl.h"
 #include "player.h"
@@ -86,14 +87,26 @@ VL_GLFW_CB static void error_cb(int error, const char* description)
   fprintf(stderr, "%d, %s\n", error, description);
 }
 
+static int parse_poly_type(const char *type)
+{
+  if (!strcmp("cylinder", type)) {
+    return POLY_CUBE;
+  } else if (!strcmp("sphere", type)){
+    return POLY_ICOSAHEDRON;
+  } else {
+    fprintf(stderr, "Invalid type, only 'cylinder' and 'sphere' supported.\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
 int main(int argc, const char *argv[])
 {
   VLGL *gl = NULL;
   VLPlayer *player = NULL;
   GLFWwindow *window = NULL;
 
-  if (argc != 3) {
-    fprintf(stderr, "Usage: %s <sphere-precision> <image-or-video>\n", argv[0]);
+  if (argc != 4) {
+    fprintf(stderr, "Usage: %s <panorama-type> <precision> <image-or-video>\n", argv[0]);
     return EXIT_FAILURE;
   }
 
@@ -102,7 +115,7 @@ int main(int argc, const char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  window = glfwCreateWindow(64, 64, argv[2], NULL, NULL);
+  window = glfwCreateWindow(64, 64, argv[3], NULL, NULL);
   if (!window) {
     glfwTerminate();
     exit(EXIT_FAILURE);
@@ -112,8 +125,8 @@ int main(int argc, const char *argv[])
   glfwSetFramebufferSizeCallback(window, framebuffer_size_cb);
 
   VLGL_version();
-  gl = VLGL_construct(atoi(argv[1]));
-  player = VLPlayer_construct(gl, argv[2]);
+  gl = VLGL_construct(parse_poly_type(argv[1]), atoi(argv[2]));
+  player = VLPlayer_construct(gl, argv[3]);
   glfwSetWindowUserPointer(window, player);
 
   while (!glfwWindowShouldClose(window)) {

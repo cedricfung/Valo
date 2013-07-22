@@ -59,7 +59,7 @@ typedef struct VLGL {
   poly_t *poly;
 } VLGL;
 
-VLGL *VLGL_construct(int p);
+VLGL *VLGL_construct(enum poly_type type, int precision);
 
 void VLGL_destroy(VLGL *gl);
 
