@@ -35,10 +35,10 @@
 #include <math.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "3dm.h"
-#include "poly.h"
-#include "vlgl.h"
-#include "player.h"
+#include "3dm/3dm.h"
+#include "3dm/poly.h"
+#include "valo/vlgl.h"
+#include "valo/player.h"
 
 #define VLGL_CHECK_ERROR() do { \
   for (GLenum err = glGetError(); err != GL_NO_ERROR; err = glGetError()) { \

@@ -38,9 +38,10 @@
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>
+#include <libavutil/time.h>
 #include <libswscale/swscale.h>
-#include "vlgl.h"
-#include "player.h"
+#include "valo/vlgl.h"
+#include "valo/player.h"
 
 static const struct timespec TIMER_TEN_MILLI = { 0, 1e7 };
 static const vl_time TIMER_SEEK_NORMAL = -7;

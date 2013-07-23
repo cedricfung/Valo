@@ -31,8 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <GLFW/glfw3.h>
-#include "vlgl.h"
-#include "player.h"
+#include "valo/vlgl.h"
+#include "valo/player.h"
 
 static const vl_time TIMER_SEEK_STEP = 1e7;
 

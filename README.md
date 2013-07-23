@@ -7,6 +7,7 @@ Full featured panoramic image and video viewer.
 Dependencies
 ------------
 
+* GCC 4.8+ or Clang 3.3+
 * OpenGL 3.0+
 * GLFW 3.0+ (http://glfw.org)
 * FFmpeg 1.0+ (http://ffmpeg.org)

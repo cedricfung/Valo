@@ -32,8 +32,8 @@
 #define _VL_GL_H
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "3dm.h"
-#include "poly.h"
+#include "3dm/3dm.h"
+#include "3dm/poly.h"
 
 typedef struct VLImage VLImage;
 
