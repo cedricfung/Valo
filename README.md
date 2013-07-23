@@ -11,16 +11,16 @@ Dependencies
 * OpenGL 3.0+
 * GLFW 3.0+ (http://glfw.org)
 * FFmpeg 1.0+ (http://ffmpeg.org)
-* 3dm (https://github.com/vecio/3dm)
+* 3DM (https://github.com/vecio/3DM)
 
 
 Build and run
 -------------
 
-Install all dependencies above, except `3dm`. Then open your favorite terminal:
+Install all dependencies above, except `3DM`. Then open your favorite terminal:
 
-    git clone https://github.com/vecio/3dm.git 3dm
-    git clone https://github.com/vecio/valo.git valo
+    git clone https://github.com/vecio/3DM.git 3dm
+    git clone https://github.com/vecio/Valo.git valo
     cd valo && make
     ./valo <panorama-type> <precision> <image-or-video>
 
