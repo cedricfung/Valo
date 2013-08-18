@@ -1,4 +1,4 @@
-C_FLAGS=-g -Wall -march=native -mno-avx
+C_FLAGS=-g -Wall -march=native
 C_INCLUDES=-Iinclude -I../3dm/include
 LDLIBS=-lm -lGL -lGLU -lglfw -lpthread -lavformat -lavcodec -lavutil -lswscale
 SOURCES=../3dm/src/*.c src/*.c valo.c

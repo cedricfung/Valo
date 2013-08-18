@@ -179,10 +179,10 @@ VLGL *VLGL_construct(enum poly_type type, int precision)
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  gl->m_eye[1] = -3;
+  gl->m_eye.ptr[1] = -3;
   gl->m_model = mat4d_identity();
   gl->m_proj = mat4d_perspective(45, 1, 1, 10);
-  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){0}, (vec4d){0,0,1});
+  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){.vex = {0}}, (vec4d){.vex = {0,0,1}});
   gl->m_tex = mat4d_identity();
 
   VLGL_CHECK_ERROR();
@@ -226,10 +226,10 @@ void VLGL_render(VLGL *gl, VLImage *img)
     glUniform1i(gl->samplers[2], 66);
   }
 
-  glUniformMatrix4fv(gl->u_model, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_model)));
-  glUniformMatrix4fv(gl->u_view, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_view)));
-  glUniformMatrix4fv(gl->u_proj, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_proj)));
-  glUniformMatrix4fv(gl->u_tex, 1, GL_TRUE, vector_ptr(GLfloat, mat4d_to_mat4f(gl->m_tex)));
+  glUniformMatrix4fv(gl->u_model, 1, GL_TRUE, mat4d_to_mat4f(gl->m_model).ptr);
+  glUniformMatrix4fv(gl->u_view, 1, GL_TRUE, mat4d_to_mat4f(gl->m_view).ptr);
+  glUniformMatrix4fv(gl->u_proj, 1, GL_TRUE, mat4d_to_mat4f(gl->m_proj).ptr);
+  glUniformMatrix4fv(gl->u_tex, 1, GL_TRUE, mat4d_to_mat4f(gl->m_tex).ptr);
 
   glBindVertexArray(gl->vao);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gl->ebo);
@@ -251,14 +251,14 @@ void VLGL_viewport(VLGL *gl, int w, int h)
 
 void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree)
 {
-  gl->m_model = mat4d_rotate(gl->m_model, (vec4d){x,y,z}, degree);
+  gl->m_model = mat4d_rotate(gl->m_model, (vec4d){.vex = {x,y,z}}, degree);
 }
 
 void VLGL_dive(VLGL *gl)
 {
-  gl->m_eye[1] = gl->m_eye[1] - 4 * gl->m_eye[1] / fabs(gl->m_eye[1]);
-  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){0}, (vec4d){0,0,1});
-  if (gl->m_eye[1] > 0) {
+  gl->m_eye.ptr[1] = gl->m_eye.ptr[1] - 4 * gl->m_eye.ptr[1] / fabs(gl->m_eye.ptr[1]);
+  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){.vex = {0}}, (vec4d){.vex = {0,0,1}});
+  if (gl->m_eye.ptr[1] > 0) {
     glCullFace(GL_FRONT);
     gl->m_tex = mat4d_translate(mat4d_scale(mat4d_identity(), -1, 1, 1), 1, 0, 0);
   } else {
