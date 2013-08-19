@@ -58,14 +58,17 @@ VL_GLFW_CB static void key_cb(GLFWwindow* window, int key, int scancode, int act
       case GLFW_KEY_DOWN:
         VLGL_rotate(player->gl, 1, 0, 0, 10);
         break;
-      case GLFW_KEY_D:
-        VLGL_dive(player->gl);
-        break;
       case GLFW_KEY_B:
         VLPlayer_seek(player, -TIMER_SEEK_STEP);
         break;
       case GLFW_KEY_F:
         VLPlayer_seek(player, TIMER_SEEK_STEP);
+        break;
+      case GLFW_KEY_I:
+        VLGL_zoom(player->gl, 0.1);
+        break;
+      case GLFW_KEY_O:
+        VLGL_zoom(player->gl, -0.1);
         break;
       case GLFW_KEY_ESCAPE:
         glfwSetWindowShouldClose(window, GL_TRUE);
