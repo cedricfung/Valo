@@ -4,6 +4,12 @@ Valo
 Full featured panoramic image and video viewer.
 
 
+Screenshots
+-----------
+
+![Little planet view](https://o.repo.io/130819NgUw.png)
+
+
 Dependencies
 ------------
 

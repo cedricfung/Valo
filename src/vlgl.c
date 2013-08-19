@@ -184,7 +184,8 @@ VLGL *VLGL_construct(enum poly_type type, int precision)
   }
 
   gl->vw = 1; gl->vh = 1; gl->vz = 1;
-  gl->m_model = mat4d_identity();
+  gl->rotate_v = -90;
+  gl->m_model = mat4d_rotate(mat4d_identity(), (vec4d){.vex = {1, 0, 0}}, -90);
   gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
   gl->m_view = mat4d_look_at((vec4d){.vex = {0, 0, -1}}, (vec4d){.vex = {0}}, (vec4d){.vex = {0,1,0}});
   gl->m_tex = mat4d_identity();
@@ -256,7 +257,19 @@ void VLGL_viewport(VLGL *gl, int w, int h)
 
 void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree)
 {
-  gl->m_model = mat4d_rotate(gl->m_model, (vec4d){.vex = {x,y,z}}, degree);
+  double delta = degree;
+  if (x == 1 && y == 0 && z == 0) {
+    if (gl->rotate_v + degree > 0) {
+      delta = -gl->rotate_v;
+      gl->rotate_v = 0;
+    } else if (gl->rotate_v + degree < -180) {
+      delta = -180 - gl->rotate_v;
+      gl->rotate_v = -180;
+    } else {
+      gl->rotate_v += degree;
+    }
+  }
+  gl->m_model = mat4d_rotate(gl->m_model, (vec4d){.vex = {x,y,z}}, delta);
 }
 
 void VLGL_zoom(VLGL *gl, double inc)
@@ -273,7 +286,8 @@ void VLGL_zoom(VLGL *gl, double inc)
 void VLGL_reset(VLGL *gl)
 {
   gl->vz = 1;
-  gl->m_model = mat4d_identity();
+  gl->rotate_v = -90;
+  gl->m_model = mat4d_rotate(mat4d_identity(), (vec4d){.vex = {1, 0, 0}}, -90);
   gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
 }
 

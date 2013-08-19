@@ -57,6 +57,7 @@ typedef struct VLGL {
   mat4d m_tex;
   poly_t *poly;
   GLfloat vw, vh, vz;
+  GLfloat rotate_v;
 } VLGL;
 
 VLGL *VLGL_construct(enum poly_type type, int precision);
