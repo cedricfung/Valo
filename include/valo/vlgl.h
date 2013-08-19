@@ -55,8 +55,8 @@ typedef struct VLGL {
   mat4d m_view;
   mat4d m_proj;
   mat4d m_tex;
-  vec4d m_eye;
   poly_t *poly;
+  GLfloat vw, vh, vz;
 } VLGL;
 
 VLGL *VLGL_construct(enum poly_type type, int precision);
@@ -69,7 +69,7 @@ void VLGL_viewport(VLGL *gl, int w, int h);
 
 void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree);
 
-void VLGL_dive(VLGL *gl);
+void VLGL_zoom(VLGL *gl, double inc);
 
 void VLGL_reset(VLGL *gl);
 

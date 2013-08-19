@@ -68,9 +68,13 @@ uniform mat4 u_tex; \
 layout(location=7) in vec4 a_position; \
 layout(location=3) in vec4 a_texcoord; \
 smooth out vec2 v_texcoord; \
+vec4 stereo(vec4 v) { \
+  float len = length(v.xyz); \
+  return vec4(v.x / (len - v.z), v.y / (len - v.z), 0, v.w); \
+} \
 void main() { \
   v_texcoord = (u_tex * a_texcoord).xy; \
-  gl_Position = u_proj * u_view * u_model * a_position; \
+  gl_Position = u_proj * u_view * stereo(u_model * a_position); \
 } \
 "
 
@@ -179,10 +183,10 @@ VLGL *VLGL_construct(enum poly_type type, int precision)
     glBindTexture(GL_TEXTURE_2D, 0);
   }
 
-  gl->m_eye.ptr[1] = -3;
+  gl->vw = 1; gl->vh = 1; gl->vz = 1;
   gl->m_model = mat4d_identity();
-  gl->m_proj = mat4d_perspective(45, 1, 1, 10);
-  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){.vex = {0}}, (vec4d){.vex = {0,0,1}});
+  gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
+  gl->m_view = mat4d_look_at((vec4d){.vex = {0, 0, -1}}, (vec4d){.vex = {0}}, (vec4d){.vex = {0,1,0}});
   gl->m_tex = mat4d_identity();
 
   VLGL_CHECK_ERROR();
@@ -246,7 +250,8 @@ void VLGL_render(VLGL *gl, VLImage *img)
 
 void VLGL_viewport(VLGL *gl, int w, int h)
 {
-  gl->m_proj = mat4d_perspective(45, w / (float)h, 1, 10);
+  gl->vw = w; gl->vh = h;
+  gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
 }
 
 void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree)
@@ -254,22 +259,22 @@ void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree)
   gl->m_model = mat4d_rotate(gl->m_model, (vec4d){.vex = {x,y,z}}, degree);
 }
 
-void VLGL_dive(VLGL *gl)
+void VLGL_zoom(VLGL *gl, double inc)
 {
-  gl->m_eye.ptr[1] = gl->m_eye.ptr[1] - 4 * gl->m_eye.ptr[1] / fabs(gl->m_eye.ptr[1]);
-  gl->m_view = mat4d_look_at(gl->m_eye, (vec4d){.vex = {0}}, (vec4d){.vex = {0,0,1}});
-  if (gl->m_eye.ptr[1] > 0) {
-    glCullFace(GL_FRONT);
-    gl->m_tex = mat4d_translate(mat4d_scale(mat4d_identity(), -1, 1, 1), 1, 0, 0);
-  } else {
-    glCullFace(GL_BACK);
-    gl->m_tex = mat4d_identity();
+  gl->vz -= inc;
+  if (gl->vz > 3.9) {
+    gl->vz = 3.9;
+  } else if (gl->vz < 0.1) {
+    gl->vz = 0.1;
   }
+  gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
 }
 
 void VLGL_reset(VLGL *gl)
 {
+  gl->vz = 1;
   gl->m_model = mat4d_identity();
+  gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
 }
 
 void VLGL_version(void)
