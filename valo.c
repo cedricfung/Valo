@@ -37,7 +37,7 @@
 static const vl_time TIMER_SEEK_STEP = 1e7;
 
 #define VL_GLFW_CB
-VL_GLFW_CB static void key_cb(GLFWwindow* window, int key, int scancode, int action, int mods)
+VL_GLFW_CB static void key_cb(GLFWwindow *window, int key, int scancode, int action, int modes)
 {
   VLPlayer *player = glfwGetWindowUserPointer(window);
   if (action == GLFW_PRESS) {
@@ -47,10 +47,10 @@ VL_GLFW_CB static void key_cb(GLFWwindow* window, int key, int scancode, int act
         VLGL_reset(player->gl);
         break;
       case GLFW_KEY_LEFT:
-        VLGL_rotate(player->gl, 0, 0, 1, -10);
+        VLGL_rotate(player->gl, 0, 1, 0, -10);
         break;
       case GLFW_KEY_RIGHT:
-        VLGL_rotate(player->gl, 0, 0, 1, 10);
+        VLGL_rotate(player->gl, 0, 1, 0, 10);
         break;
       case GLFW_KEY_UP:
         VLGL_rotate(player->gl, 1, 0, 0, -10);
@@ -78,7 +78,17 @@ VL_GLFW_CB static void key_cb(GLFWwindow* window, int key, int scancode, int act
   }
 }
 
-VL_GLFW_CB static void framebuffer_size_cb(GLFWwindow* window, int w, int h)
+VL_GLFW_CB static void scroll_cb(GLFWwindow *window, double x, double y)
+{
+  VLPlayer *player = glfwGetWindowUserPointer(window);
+  if (y !=  0) {
+    VLGL_zoom(player->gl, y / 10);
+  } else if (x != 0) {
+    VLGL_rotate(player->gl, 0, 1, 0, 10 * x);
+  }
+}
+
+VL_GLFW_CB static void framebuffer_size_cb(GLFWwindow *window, int w, int h)
 {
   VLPlayer *player = glfwGetWindowUserPointer(window);
   glViewport(0, 0, w, h);
@@ -125,6 +135,7 @@ int main(int argc, const char *argv[])
   }
   glfwMakeContextCurrent(window);
   glfwSetKeyCallback(window, key_cb);
+  glfwSetScrollCallback(window, scroll_cb);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_cb);
 
   VLGL_version();
