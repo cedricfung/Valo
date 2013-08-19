@@ -185,9 +185,9 @@ VLGL *VLGL_construct(enum poly_type type, int precision)
 
   gl->vw = 1; gl->vh = 1; gl->vz = 1;
   gl->rotate_v = -90;
-  gl->m_model = mat4d_rotate(mat4d_identity(), (vec4d){.vex = {1, 0, 0}}, -90);
+  gl->m_model = mat4d_rotate(mat4d_identity(), (vec4d)vector_new(1, 0, 0), -90);
   gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
-  gl->m_view = mat4d_look_at((vec4d){.vex = {0, 0, -1}}, (vec4d){.vex = {0}}, (vec4d){.vex = {0,1,0}});
+  gl->m_view = mat4d_look_at((vec4d)vector_new(0, 0, -1), (vec4d)vector_new(0), (vec4d)vector_new(0,1,0));
   gl->m_tex = mat4d_identity();
 
   VLGL_CHECK_ERROR();
@@ -269,7 +269,7 @@ void VLGL_rotate(VLGL *gl, double x, double y, double z, double degree)
       gl->rotate_v += degree;
     }
   }
-  gl->m_model = mat4d_rotate(gl->m_model, (vec4d){.vex = {x,y,z}}, delta);
+  gl->m_model = mat4d_rotate(gl->m_model, (vec4d)vector_new(x,y,z), delta);
 }
 
 void VLGL_zoom(VLGL *gl, double inc)
@@ -287,7 +287,7 @@ void VLGL_reset(VLGL *gl)
 {
   gl->vz = 1;
   gl->rotate_v = -90;
-  gl->m_model = mat4d_rotate(mat4d_identity(), (vec4d){.vex = {1, 0, 0}}, -90);
+  gl->m_model = mat4d_rotate(mat4d_identity(), (vec4d)vector_new(1, 0, 0), -90);
   gl->m_proj = mat4d_ortho(45 * gl->vz, gl->vw / gl->vh, 1, 10);
 }
 
